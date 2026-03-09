@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block title %}Register - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-body p-4">
+                <h3 class="card-title text-center mb-4">
+                    <i class="bi bi-person-plus text-primary"></i> Register
+                </h3>
+
+
+                <ul class="nav nav-pills nav-justified mb-4" id="roleTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="student-tab" data-bs-toggle="pill"
+                                data-bs-target="#student-form" type="button" role="tab">
+                            <i class="bi bi-mortarboard me-1"></i> Student
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="company-tab" data-bs-toggle="pill"
+                                data-bs-target="#company-form" type="button" role="tab">
+                            <i class="bi bi-building me-1"></i> Company
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+
+
+
+                    <div class="tab-pane fade show active" id="student-form" role="tabpanel">
+                        <form method="POST" action="{{ url_for('auth.register') }}">
+                            <input type="hidden" name="role" value="student">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Username <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="username" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="full_name" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Password <span class="text-danger">*</span></label>
+                                    <input type="password" class="form-control" name="password" minlength="4" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                                    <input type="password" class="form-control" name="confirm_password" minlength="4" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" name="email">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Phone</label>
+                                    <input type="text" class="form-control" name="phone">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Department</label>
+                                    <input type="text" class="form-control" name="department" placeholder="e.g. Computer Science">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Roll Number</label>
+                                    <input type="text" class="form-control" name="roll_number">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">CGPA</label>
+                                    <input type="number" class="form-control" name="cgpa" step="0.01" min="0" max="10">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Graduation Year</label>
+                                    <input type="number" class="form-control" name="graduation_year" min="2020" max="2035">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Skills</label>
+                                <textarea class="form-control" name="skills" rows="2" placeholder="e.g. Python, Flask, SQL, Machine Learning"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-person-plus me-1"></i> Register as Student
+                            </button>
+                        </form>
+                    </div>
+
+
+                    
+                    <div class="tab-pane fade" id="company-form" role="tabpanel">
+                        <form method="POST" action="{{ url_for('auth.register') }}">
+                            <input type="hidden" name="role" value="company">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Username <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="username" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Company Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="company_name" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Password <span class="text-danger">*</span></label>
+                                    <input type="password" class="form-control" name="password" minlength="4" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                                    <input type="password" class="form-control" name="confirm_password" minlength="4" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Industry</label>
+                                    <input type="text" class="form-control" name="industry" placeholder="e.g. IT, Finance">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Website</label>
+                                    <input type="url" class="form-control" name="website" placeholder="https://...">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">HR Contact Name</label>
+                                    <input type="text" class="form-control" name="hr_name">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">HR Email</label>
+                                    <input type="email" class="form-control" name="hr_email">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">HR Phone</label>
+                                    <input type="text" class="form-control" name="hr_phone">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Company Description</label>
+                                <textarea class="form-control" name="description" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-building me-1"></i> Register as Company
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <hr>
+                <p class="text-center text-muted mb-0">
+                    Already have an account? <a href="{{ url_for('auth.login') }}">Login</a>
+                </p>
+                <p class="text-center text-muted small mt-1">
+                    <i class="bi bi-info-circle"></i> Students can login immediately. Companies need admin approval first.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

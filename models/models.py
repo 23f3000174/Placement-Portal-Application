@@ -1,11 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin
 from datetime import datetime
 
 
 db = SQLAlchemy()
 
-class User(db.Model, UserMixin):
+class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True, nullable=False)
@@ -47,7 +46,6 @@ class Student(db.Model):
     cgpa = db.Column(db.Float)
     graduation_year = db.Column(db.Integer)
     skills = db.Column(db.Text)
-    resume_path = db.Column(db.String)
     is_blacklisted = db.Column(db.Boolean, default=False)
 
     user = db.relationship('User', backref=db.backref('student', uselist=False))
