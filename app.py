@@ -19,8 +19,10 @@ def inject_user():
     return dict(user=user)
 
 from controllers.auth import auth_bp
+from controllers.admin import admin_bp
 
 app.register_blueprint(auth_bp)
+app.register_blueprint(admin_bp, url_prefix='/admin')
 
 
 @app.route('/')

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}All Applications{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="mb-4"><i class="bi bi-file-earmark-text me-2"></i>All Applications</h2>
+
+    <div class="mb-3">
+        <div class="btn-group">
+            <a href="{{ url_for('admin.applications', status='all') }}" class="btn btn-sm {{ 'btn-primary' if status_filter == 'all' else 'btn-outline-primary' }}">All</a>
+            <a href="{{ url_for('admin.applications', status='applied') }}" class="btn btn-sm {{ 'btn-info' if status_filter == 'applied' else 'btn-outline-info' }}">Applied</a>
+            <a href="{{ url_for('admin.applications', status='selected') }}" class="btn btn-sm {{ 'btn-success' if status_filter == 'selected' else 'btn-outline-success' }}">Selected</a>
+            <a href="{{ url_for('admin.applications', status='rejected') }}" class="btn btn-sm {{ 'btn-danger' if status_filter == 'rejected' else 'btn-outline-danger' }}">Rejected</a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Student</th>
+                    <th>Roll No</th>
+                    <th>Drive</th>
+                    <th>Company</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for app in applications %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td><a href="{{ url_for('admin.view_student', student_id=app.student.id) }}">{{ app.student.full_name }}</a></td>
+                    <td>{{ app.student.roll_number or '-' }}</td>
+                    <td><a href="{{ url_for('admin.view_drive', drive_id=app.drive.id) }}">{{ app.drive.job_title }}</a></td>
+                    <td>{{ app.drive.company.company_name }}</td>
+                    <td>{{ app.application_date.strftime('%d %b %Y') }}</td>
+                    <td>
+                        {% if app.status == 'selected' %}
+                            <span class="badge bg-success">Selected</span>
+                        {% elif app.status == 'rejected' %}
+                            <span class="badge bg-danger">Rejected</span>
+                        {% elif app.status == 'applied' %}
+                            <span class="badge bg-info">Applied</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ app.status }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="7" class="text-center text-muted">No applications found.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
