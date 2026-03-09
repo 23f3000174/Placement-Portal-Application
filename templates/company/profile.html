@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Company Profile - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="bi bi-gear text-primary"></i> Company Profile</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('company.profile') }}">
+                    <div class="mb-3">
+                        <label class="form-label">Company Name</label>
+                        <input type="text" class="form-control" name="company_name" value="{{ company.company_name }}" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Industry</label>
+                            <input type="text" class="form-control" name="industry" value="{{ company.industry or '' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Website</label>
+                            <input type="url" class="form-control" name="website" value="{{ company.website or '' }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">HR Contact Name</label>
+                            <input type="text" class="form-control" name="hr_name" value="{{ company.hr_name or '' }}">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">HR Email</label>
+                            <input type="email" class="form-control" name="hr_email" value="{{ company.hr_email or '' }}">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">HR Phone</label>
+                            <input type="text" class="form-control" name="hr_phone" value="{{ company.hr_phone or '' }}">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" name="description" rows="4">{{ company.description or '' }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <span class="badge bg-{% if company.approval_status == 'approved' %}success{% elif company.approval_status == 'pending' %}warning text-dark{% else %}danger{% endif %}">
+                            Status: {{ company.approval_status }}
+                        </span>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i> Update Profile</button>
+                    <a href="{{ url_for('company.dashboard') }}" class="btn btn-outline-secondary ms-2">Back</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

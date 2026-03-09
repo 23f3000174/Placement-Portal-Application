@@ -20,9 +20,11 @@ def inject_user():
 
 from controllers.auth import auth_bp
 from controllers.admin import admin_bp
+from controllers.company import company_bp
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(admin_bp, url_prefix='/admin')
+app.register_blueprint(company_bp, url_prefix='/company')
 
 
 @app.route('/')

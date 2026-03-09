@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Drive Applications - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{{ url_for('company.dashboard') }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">{{ drive.job_title }}</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Company:</strong> {{ company.company_name }}</li>
+                <li class="list-group-item"><strong>Location:</strong> {{ drive.location or '-' }}</li>
+                <li class="list-group-item"><strong>Salary:</strong> {{ drive.salary or '-' }}</li>
+                <li class="list-group-item"><strong>Deadline:</strong> {{ drive.application_deadline.strftime('%d/%m/%Y') if drive.application_deadline else '-' }}</li>
+                <li class="list-group-item"><strong>Status:</strong>
+                    <span class="badge bg-{% if drive.status == 'approved' %}success{% elif drive.status == 'pending' %}warning text-dark{% else %}secondary{% endif %}">{{ drive.status }}</span>
+                </li>
+                <li class="list-group-item"><strong>Total Applications:</strong> {{ applications|length }}</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-people"></i> Received Applications</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr><th>#</th><th>Student</th><th>Department</th><th>CGPA</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for app in applications %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>
+                                    <a href="{{ url_for('company.view_application', app_id=app.id) }}">
+                                        {{ app.student.full_name }}
+                                    </a>
+                                </td>
+                                <td>{{ app.student.department or '-' }}</td>
+                                <td>{{ app.student.cgpa or '-' }}</td>
+                                <td>{{ app.application_date.strftime('%d/%m/%Y') if app.application_date else '-' }}</td>
+                                <td>
+                                    <span class="badge bg-{% if app.status == 'selected' %}success{% elif app.status == 'rejected' %}danger{% elif app.status == 'shortlisted' %}warning text-dark{% elif app.status == 'interview' %}info{% else %}primary{% endif %}">
+                                        {{ app.status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('company.view_application', app_id=app.id) }}" class="btn btn-sm btn-info">
+                                        <i class="bi bi-eye"></i> Review
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% if not applications %}
+                            <tr><td colspan="7" class="text-center text-muted py-4">No applications received yet.</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
