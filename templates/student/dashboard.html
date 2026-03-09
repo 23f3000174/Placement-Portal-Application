@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Student Dashboard - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2><i class="bi bi-mortarboard text-primary"></i> Welcome, {{ student.full_name }}</h2>
+        <p class="text-muted">Student Dashboard</p>
+    </div>
+    <div class="col-auto">
+        <a href="{{ url_for('student.profile') }}" class="btn btn-outline-primary btn-sm me-1"><i class="bi bi-person-circle"></i> Edit Profile</a>
+        <a href="{{ url_for('student.history') }}" class="btn btn-outline-info btn-sm"><i class="bi bi-clock-history"></i> History</a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-building text-primary"></i> Organizations</h5>
+            </div>
+            <div class="list-group list-group-flush" style="max-height: 400px; overflow-y: auto;">
+                {% for c in companies %}
+                <a href="{{ url_for('student.company_detail', company_id=c.id) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    {{ c.company_name }}
+                    <span class="badge bg-primary rounded-pill">{{ c.drives|selectattr('status', 'equalto', 'approved')|list|length }}</span>
+                </a>
+                {% endfor %}
+                {% if not companies %}
+                <div class="list-group-item text-center text-muted py-3">No companies available.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-megaphone text-success"></i> Available Placement Drives</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr><th>#</th><th>Job Title</th><th>Company</th><th>Location</th><th>Salary</th><th>Deadline</th><th>Action</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for d in approved_drives %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td><a href="{{ url_for('student.drive_detail', drive_id=d.id) }}"><strong>{{ d.job_title }}</strong></a></td>
+                                <td>{{ d.company.company_name }}</td>
+                                <td>{{ d.location or '-' }}</td>
+                                <td>{{ d.salary or '-' }}</td>
+                                <td>{{ d.application_deadline.strftime('%d/%m/%Y') if d.application_deadline else '-' }}</td>
+                                <td>
+                                    {% if d.id in applied_drive_ids %}
+                                    <span class="badge bg-secondary">Applied</span>
+                                    {% else %}
+                                    <form method="POST" action="{{ url_for('student.apply_drive', drive_id=d.id) }}" style="display:inline">
+                                        <button type="submit" class="btn btn-sm btn-success">
+                                            <i class="bi bi-send"></i> Apply
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% if not approved_drives %}
+                            <tr><td colspan="7" class="text-center text-muted py-3">No drives available at the moment.</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-file-earmark-check text-info"></i> Applied Drives</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr><th>#</th><th>Drive</th><th>Company</th><th>Applied On</th><th>Status</th><th>Action</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for app in my_applications %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ app.drive.job_title }}</td>
+                                <td>{{ app.drive.company.company_name }}</td>
+                                <td>{{ app.application_date.strftime('%d/%m/%Y') if app.application_date else '-' }}</td>
+                                <td>
+                                    <span class="badge bg-{% if app.status == 'selected' %}success{% elif app.status == 'rejected' %}danger{% elif app.status == 'shortlisted' %}warning text-dark{% elif app.status == 'interview' %}info{% else %}primary{% endif %}">
+                                        {{ app.status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('student.drive_detail', drive_id=app.drive.id) }}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i> View</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% if not my_applications %}
+                            <tr><td colspan="6" class="text-center text-muted py-3">You haven't applied to any drives yet.</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

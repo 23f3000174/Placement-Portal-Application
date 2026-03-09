@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Drive Details - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{{ url_for('student.dashboard') }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">{{ drive.job_title }}</h4>
+                <span class="badge bg-light text-primary">{{ drive.status }}</span>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><i class="bi bi-building me-2 text-primary"></i><strong>Company:</strong> {{ company.company_name }}</p>
+                        <p><i class="bi bi-geo-alt me-2 text-danger"></i><strong>Location:</strong> {{ drive.location or 'Not specified' }}</p>
+                        <p><i class="bi bi-currency-rupee me-2 text-success"></i><strong>Salary:</strong> {{ drive.salary or 'Not specified' }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><i class="bi bi-calendar me-2 text-info"></i><strong>Deadline:</strong> {{ drive.application_deadline.strftime('%d/%m/%Y') if drive.application_deadline else 'Not specified' }}</p>
+                        <p><i class="bi bi-check-circle me-2 text-warning"></i><strong>Eligibility:</strong> {{ drive.eligibility_criteria or 'Not specified' }}</p>
+                    </div>
+                </div>
+
+                <h5>Job Description</h5>
+                <p class="border rounded p-3 bg-light">{{ drive.job_description or 'No description provided.' }}</p>
+
+                {% if drive.status == 'approved' %}
+                    {% if existing_application %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-1"></i> You have already applied for this drive.
+                        <strong>Status:</strong>
+                        <span class="badge bg-{% if existing_application.status == 'selected' %}success{% elif existing_application.status == 'rejected' %}danger{% elif existing_application.status == 'shortlisted' %}warning text-dark{% elif existing_application.status == 'interview' %}info{% else %}primary{% endif %}">
+                            {{ existing_application.status }}
+                        </span>
+                        {% if existing_application.remarks %}
+                        <br><strong>Remarks:</strong> {{ existing_application.remarks }}
+                        {% endif %}
+                        {% if existing_application.interview_mode %}
+                        <br><strong>Interview:</strong> {{ existing_application.interview_mode }}
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <form method="POST" action="{{ url_for('student.apply_drive', drive_id=drive.id) }}">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-send me-1"></i> Apply Now
+                        </button>
+                    </form>
+                    {% endif %}
+                {% else %}
+                <div class="alert alert-warning"><i class="bi bi-exclamation-triangle"></i> This drive is not currently accepting applications.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-building"></i> Company Info</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>{{ company.company_name }}</strong></li>
+                <li class="list-group-item"><i class="bi bi-briefcase me-1"></i> {{ company.industry or 'N/A' }}</li>
+                <li class="list-group-item"><i class="bi bi-globe me-1"></i>
+                    {% if company.website %}
+                    <a href="{{ company.website }}" target="_blank">{{ company.website }}</a>
+                    {% else %}N/A{% endif %}
+                </li>
+                <li class="list-group-item"><i class="bi bi-person me-1"></i> HR: {{ company.hr_name or 'N/A' }}</li>
+                <li class="list-group-item"><i class="bi bi-envelope me-1"></i> {{ company.hr_email or 'N/A' }}</li>
+            </ul>
+            <div class="card-body">
+                <a href="{{ url_for('student.company_detail', company_id=company.id) }}" class="btn btn-outline-primary btn-sm w-100">
+                    View All Drives by {{ company.company_name }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

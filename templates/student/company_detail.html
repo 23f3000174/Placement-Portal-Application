@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}{{ company.company_name }} - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{{ url_for('student.dashboard') }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-building"></i> {{ company.company_name }}</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><i class="bi bi-briefcase me-1"></i> <strong>Industry:</strong> {{ company.industry or 'N/A' }}</li>
+                <li class="list-group-item"><i class="bi bi-globe me-1"></i> <strong>Website:</strong>
+                    {% if company.website %}
+                    <a href="{{ company.website }}" target="_blank">{{ company.website }}</a>
+                    {% else %}N/A{% endif %}
+                </li>
+                <li class="list-group-item"><i class="bi bi-person me-1"></i> <strong>HR:</strong> {{ company.hr_name or 'N/A' }}</li>
+                <li class="list-group-item"><i class="bi bi-envelope me-1"></i> <strong>Email:</strong> {{ company.hr_email or 'N/A' }}</li>
+                <li class="list-group-item"><i class="bi bi-telephone me-1"></i> <strong>Phone:</strong> {{ company.hr_phone or 'N/A' }}</li>
+            </ul>
+            {% if company.description %}
+            <div class="card-body">
+                <h6>About</h6>
+                <p>{{ company.description }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-white d-flex justify-content-between">
+                <h5 class="mb-0"><i class="bi bi-briefcase"></i> Placement Drives</h5>
+                <span class="badge bg-primary rounded-pill">{{ drives|length }}</span>
+            </div>
+            <div class="card-body">
+                {% if drives %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Job Title</th>
+                                <th>Location</th>
+                                <th>Salary</th>
+                                <th>Deadline</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for drive in drives %}
+                            <tr>
+                                <td>{{ drive.job_title }}</td>
+                                <td>{{ drive.location or 'N/A' }}</td>
+                                <td>{{ drive.salary or 'N/A' }}</td>
+                                <td>{{ drive.application_deadline.strftime('%d/%m/%Y') if drive.application_deadline else 'N/A' }}</td>
+                                <td>
+                                    {% set applied = applied_drive_ids and drive.id in applied_drive_ids %}
+                                    {% if applied %}
+                                    <span class="badge bg-success">Applied</span>
+                                    {% else %}
+                                    <span class="badge bg-info">Open</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('student.drive_detail', drive_id=drive.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4 text-muted">
+                    <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                    <p>No active placement drives from this company.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

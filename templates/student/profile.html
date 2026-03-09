@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}My Profile - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h2><i class="bi bi-person-circle"></i> My Profile</h2>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Edit Profile</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('student.profile') }}">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="full_name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="full_name" name="full_name" value="{{ student.full_name or '' }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ student.email or '' }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="text" class="form-control" id="phone" name="phone" value="{{ student.phone or '' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="department" class="form-label">Department</label>
+                            <input type="text" class="form-control" id="department" name="department" value="{{ student.department or '' }}">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="roll_number" class="form-label">Roll Number</label>
+                            <input type="text" class="form-control" id="roll_number" name="roll_number" value="{{ student.roll_number or '' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="cgpa" class="form-label">CGPA</label>
+                            <input type="number" step="0.01" min="0" max="10" class="form-control" id="cgpa" name="cgpa" value="{{ student.cgpa or '' }}">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="graduation_year" class="form-label">Graduation Year</label>
+                            <input type="number" class="form-control" id="graduation_year" name="graduation_year" value="{{ student.graduation_year or '' }}">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="skills" class="form-label">Skills</label>
+                        <textarea class="form-control" id="skills" name="skills" rows="3" placeholder="e.g., Python, Java, SQL">{{ student.skills or '' }}</textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Update Profile
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-person"></i> Profile Summary</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Username:</strong> {{ user.username }}</li>
+                <li class="list-group-item"><strong>Name:</strong> {{ student.full_name or 'Not set' }}</li>
+                <li class="list-group-item"><strong>Email:</strong> {{ student.email or 'Not set' }}</li>
+                <li class="list-group-item"><strong>Phone:</strong> {{ student.phone or 'Not set' }}</li>
+                <li class="list-group-item"><strong>Department:</strong> {{ student.department or 'Not set' }}</li>
+                <li class="list-group-item"><strong>Roll No:</strong> {{ student.roll_number or 'Not set' }}</li>
+                <li class="list-group-item"><strong>CGPA:</strong> {{ student.cgpa or 'Not set' }}</li>
+                <li class="list-group-item"><strong>Graduation:</strong> {{ student.graduation_year or 'Not set' }}</li>
+                <li class="list-group-item"><strong>Skills:</strong> {{ student.skills or 'Not set' }}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Application History - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-clock-history"></i> Application History</h2>
+    <span class="badge bg-primary rounded-pill fs-6">{{ applications|length }}</span>
+</div>
+
+{% if applications %}
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Drive No.</th>
+                        <th>Job Title</th>
+                        <th>Company</th>
+                        <th>Interview</th>
+                        <th>Result</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ app.drive.id }}</td>
+                        <td>
+                            <a href="{{ url_for('student.drive_detail', drive_id=app.drive.id) }}">{{ app.drive.job_title }}</a>
+                        </td>
+                        <td>{{ app.drive.company.company_name }}</td>
+                        <td>{{ app.interview_mode or 'N/A' }}</td>
+                        <td>
+                            <span class="badge bg-{% if app.status == 'selected' %}success{% elif app.status == 'rejected' %}danger{% elif app.status == 'shortlisted' %}warning text-dark{% elif app.status == 'interview' %}info{% else %}primary{% endif %}">
+                                {{ app.status }}
+                            </span>
+                        </td>
+                        <td>{{ app.remarks or '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body text-center py-5 text-muted">
+        <i class="bi bi-clock-history" style="font-size: 3rem;"></i>
+        <p class="mt-2">No application history found.</p>
+        <a href="{{ url_for('student.dashboard') }}" class="btn btn-primary">Browse Drives</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
