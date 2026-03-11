@@ -33,7 +33,7 @@
                         </td>
                         <td>{{ app.drive.company.company_name }}</td>
                         <td>{{ app.drive.location or 'N/A' }}</td>
-                        <td>{{ app.applied_date.strftime('%d/%m/%Y') if app.applied_date else 'N/A' }}</td>
+                        <td>{{ app.application_date.strftime('%d/%m/%Y') if app.application_date else 'N/A' }}</td>
                         <td>{{ app.interview_mode or 'N/A' }}</td>
                         <td>
                             <span class="badge bg-{% if app.status == 'selected' %}success{% elif app.status == 'rejected' %}danger{% elif app.status == 'shortlisted' %}warning text-dark{% elif app.status == 'interview' %}info{% else %}primary{% endif %}">

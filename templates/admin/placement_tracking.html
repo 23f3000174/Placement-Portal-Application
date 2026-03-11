@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% block title %}Placement Tracking - Admin{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="mb-4"><i class="bi bi-graph-up me-2"></i>Placement Tracking</h2>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body text-center">
+                    <h3>{{ placed_count }}</h3>
+                    <p class="mb-0"><i class="bi bi-trophy"></i> Students Placed</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body text-center">
+                    <h3>{{ placement_rate }}%</h3>
+                    <p class="mb-0"><i class="bi bi-percent"></i> Placement Rate</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info">
+                <div class="card-body text-center">
+                    <h3>{{ total_applications }}</h3>
+                    <p class="mb-0"><i class="bi bi-file-earmark-text"></i> Total Applications</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-secondary">
+                <div class="card-body text-center">
+                    <h3>{{ total_students }}</h3>
+                    <p class="mb-0"><i class="bi bi-people"></i> Total Students</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="bi bi-funnel"></i> Application Status Breakdown</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col">
+                            <h4 class="text-primary">{{ applied_count }}</h4>
+                            <p class="mb-0">Applied</p>
+                        </div>
+                        <div class="col">
+                            <i class="bi bi-arrow-right text-muted"></i>
+                        </div>
+                        <div class="col">
+                            <h4 class="text-warning">{{ shortlisted_count }}</h4>
+                            <p class="mb-0">Shortlisted</p>
+                        </div>
+                        <div class="col">
+                            <i class="bi bi-arrow-right text-muted"></i>
+                        </div>
+                        <div class="col">
+                            <h4 class="text-info">{{ interview_count }}</h4>
+                            <p class="mb-0">Interview</p>
+                        </div>
+                        <div class="col">
+                            <i class="bi bi-arrow-right text-muted"></i>
+                        </div>
+                        <div class="col">
+                            <h4 class="text-success">{{ placed_count }}</h4>
+                            <p class="mb-0">Selected</p>
+                        </div>
+                        <div class="col">
+                            <h4 class="text-danger">{{ rejected_count }}</h4>
+                            <p class="mb-0">Rejected</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="bi bi-building"></i> Company-wise Placements</h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if company_stats %}
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Company</th>
+                                <th>Applications</th>
+                                <th>Selected</th>
+                                <th>Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for company_name, stats in company_stats.items() %}
+                            <tr>
+                                <td>{{ company_name }}</td>
+                                <td>{{ stats.total_apps }}</td>
+                                <td><span class="badge bg-success">{{ stats.selected }}</span></td>
+                                <td>{{ (stats.selected / stats.total_apps * 100)|round(1) if stats.total_apps > 0 else 0 }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                        <p>No placements yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="bi bi-mortarboard"></i> Department-wise Placements</h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if dept_stats %}
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Department</th>
+                                <th>Students</th>
+                                <th>Placed</th>
+                                <th>Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for dept, stats in dept_stats.items() %}
+                            <tr>
+                                <td>{{ dept }}</td>
+                                <td>{{ stats.total }}</td>
+                                <td><span class="badge bg-success">{{ stats.placed }}</span></td>
+                                <td>{{ (stats.placed / stats.total * 100)|round(1) if stats.total > 0 else 0 }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                        <p>No department data.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-white">
+            <h5 class="mb-0"><i class="bi bi-trophy"></i> Recent Placements</h5>
+        </div>
+        <div class="card-body p-0">
+            {% if recent_placements %}
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Student</th>
+                        <th>Department</th>
+                        <th>Job Title</th>
+                        <th>Company</th>
+                        <th>Interview</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in recent_placements %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.view_student', student_id=app.student.id) }}">{{ app.student.full_name }}</a>
+                        </td>
+                        <td>{{ app.student.department or 'N/A' }}</td>
+                        <td>{{ app.drive.job_title }}</td>
+                        <td>{{ app.drive.company.company_name }}</td>
+                        <td>{{ app.interview_mode or 'N/A' }}</td>
+                        <td>{{ app.application_date.strftime('%d %b %Y') if app.application_date else 'N/A' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="text-center py-4 text-muted">
+                <i class="bi bi-trophy" style="font-size: 2rem;"></i>
+                <p>No placements recorded yet.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

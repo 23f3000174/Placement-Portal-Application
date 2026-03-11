@@ -271,3 +271,61 @@ def search():
     return render_template('admin/search_results.html',
         students=students_list, companies=companies_list,
         query=query, search_type=search_type)
+
+
+@admin_bp.route('/placement-tracking')
+@admin_required
+def placement_tracking():
+    total_students = Student.query.count()
+    total_applications = Application.query.count()
+    selected = Application.query.filter_by(status='selected').all()
+    rejected_count = Application.query.filter_by(status='rejected').count()
+    shortlisted_count = Application.query.filter_by(status='shortlisted').count()
+    interview_count = Application.query.filter_by(status='interview').count()
+    applied_count = Application.query.filter_by(status='applied').count()
+
+    placed_student_ids = set(a.student_id for a in selected)
+    placed_count = len(placed_student_ids)
+    placement_rate = round((placed_count / total_students * 100), 1) if total_students > 0 else 0
+
+    company_stats = {}
+    for app in selected:
+        cname = app.drive.company.company_name
+        if cname not in company_stats:
+            company_stats[cname] = {'selected': 0, 'total_apps': 0}
+        company_stats[cname]['selected'] += 1
+
+    for cname in company_stats:
+        company_obj = Company.query.filter_by(company_name=cname).first()
+        if company_obj:
+            drive_ids = [d.id for d in company_obj.drives]
+            company_stats[cname]['total_apps'] = Application.query.filter(
+                Application.drive_id.in_(drive_ids)
+            ).count() if drive_ids else 0
+
+    dept_stats = {}
+    all_students = Student.query.all()
+    for s in all_students:
+        dept = s.department or 'Unknown'
+        if dept not in dept_stats:
+            dept_stats[dept] = {'total': 0, 'placed': 0}
+        dept_stats[dept]['total'] += 1
+        if s.id in placed_student_ids:
+            dept_stats[dept]['placed'] += 1
+
+    recent_placements = Application.query.filter_by(status='selected')\
+        .order_by(Application.application_date.desc()).limit(10).all()
+
+    return render_template('admin/placement_tracking.html',
+        total_students=total_students,
+        total_applications=total_applications,
+        placed_count=placed_count,
+        placement_rate=placement_rate,
+        rejected_count=rejected_count,
+        shortlisted_count=shortlisted_count,
+        interview_count=interview_count,
+        applied_count=applied_count,
+        company_stats=company_stats,
+        dept_stats=dept_stats,
+        recent_placements=recent_placements
+    )
